@@ -25,10 +25,10 @@
     function WhiteMapLyer() {
 
         WhiteMapLyer.prototype.tileSize = new google.maps.Size(256, 256);
-        WhiteMapLyer.prototype.minZoom = 3;
-        WhiteMapLyer.prototype.maxZoom = 20;
-        WhiteMapLyer.prototype.name = '白地図';
-        WhiteMapLyer.prototype.alt = '白地図';
+        WhiteMapLyer.prototype.minZoom = 5;
+        WhiteMapLyer.prototype.maxZoom = 14;
+        WhiteMapLyer.prototype.name = '白地図(国土地理院)';
+        WhiteMapLyer.prototype.alt = '白地図(国土地理院)';
 
         WhiteMapLyer.prototype.getTile = function (tileXY, zoom, ownerDocument) {
             var tileImage = ownerDocument.createElement('img');
