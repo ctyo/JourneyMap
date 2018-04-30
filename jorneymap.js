@@ -15,15 +15,16 @@
         }]
     };
 
-    map = new google.maps.Map(document.getElementById("map"), opts);
-    bounds = new google.maps.LatLngBounds();
-
+    var map = new google.maps.Map(document.getElementById("map"), opts);
+    var bounds = new google.maps.LatLngBounds();
+    var routes = [];
 
     function parse_gpx(xml_string) {
         var route = [];
 
         var parser = new DOMParser();
         var xmldoc = parser.parseFromString(xml_string, "text/xml");
+
         $(xmldoc).find('trk>trkseg>trkpt').each(function (i, pt) {
             if (i % 2 !== 0) return;
             var $pt = $(pt);
@@ -41,8 +42,18 @@
         };
         var polyline = new google.maps.Polyline(polylineOpts);
 
+        var distance = 0;
+        var pathList = polyline.getPath().b;
+        pathList.forEach(function (path, i) {
+            if (i-1 <= 0) return;
+            distance += google.maps.geometry.spherical.computeDistanceBetween(path, pathList[i-1]);
+        });
 
-
+        routes.push({
+            title: xmldoc.querySelector('metadata>name') ? xmldoc.querySelector('metadata>name').textContent : 'new route',
+            distance : distance,
+            polyline : polyline
+        });
     }
 
 
@@ -62,7 +73,23 @@
             }
             reader.readAsText(file);
         } else {
+            // 縮尺の調整
             map.fitBounds(bounds)
+            // 表示リストの描画
+            routes.forEach(function(route) {
+                var list = $('<li>' + route.title + '</li>');
+                list.append('<span>' + Math.floor(route.distance/100) /10 + 'km' + '</span>');
+                list.on('click', function() {
+                    route.polyline.setVisible(!route.polyline.visible);
+                    if (route.polyline.visible) {
+                        $(this).removeClass('hidden');
+                    } else {
+                        $(this).addClass('hidden');
+                    }
+                });
+                $('#list>ul').append(list);
+            });
+
             // プログレスバー等の削除
             $('#progress').hide();
             $('.popup').hide();
@@ -100,6 +127,12 @@
         readFiles(file_array);
     });
 
+    $('#menuclose').on('click', function() {
+        $('#menu').hide();
+    });
+    $('#menuopen').on('click', function() {
+        $('#menu').show();
+    });
 
     // Base64データをBlobデータに変換
     function Base64toBlob(base64) {

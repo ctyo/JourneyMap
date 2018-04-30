@@ -1,131 +1,222 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>JourneyMap</title>
-<meta charset="utf-8">
-<meta name="description" content="import gpx route data on map.">
-<meta name="author" content="https://twitter.com/c_tyo">
+  <title>JourneyMap</title>
+  <meta charset="utf-8">
+  <meta name="description" content="import gpx route data on map.">
+  <meta name="author" content="https://twitter.com/c_tyo">
 
-<meta property="og:title" content="JourneyMap" />
-<meta property="og:type" content="Map,Travel,Cycle" />
-<meta property="og:url" content="https://ctyo.github.io/JourneyMap/" />
-<meta property="og:image" content="https://cdn-ak.f.st-hatena.com/images/fotolife/c/ctyo/20170518/20170518000737.png" />
-<meta property="og:site_name" content="JourneyMap" />
-<meta property="og:description" content="import gpx route data on map." />
+  <meta property="og:title" content="JourneyMap" />
+  <meta property="og:type" content="Map,Travel,Cycle" />
+  <meta property="og:url" content="https://ctyo.github.io/JourneyMap/" />
+  <meta property="og:image" content="https://cdn-ak.f.st-hatena.com/images/fotolife/c/ctyo/20170518/20170518000737.png" />
+  <meta property="og:site_name" content="JourneyMap" />
+  <meta property="og:description" content="import gpx route data on map." />
 
-<style>
-html, body {
-  margin:0;
-  padding:0;
-  width: 100%;
-  height: 100%;
-}
-.popup {
-  position:fixed;
-  width: 100%;
-  height: 100%;
-  background: #000;
-  z-index: 100;
-  transition: .2s ease;
-  opacity: 0.8;
-}
-.popwindow {
-  top:40%;
-  left:25%;
-  background: #eaeaea;
-  width: 50%;
-  height: 20%;
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
 
-  display: inline-block;
-  position: relative;
-  padding: 1em 2.2em;
-  text-align: center;
-  color: #fff;
-  border-radius: 10px;
-  background-color: #2772DB;
-  overflow: hidden;
-}
-.popwindow .label{
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translateY(-50%) translateX(-50%);
-  font-size: 200%;
-}
-.popwindow input{
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  cursor: pointer;
-}
+    .popup {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      z-index: 100;
+      transition: .2s ease;
+      opacity: 0.8;
+    }
 
-#original_controll {
-  position: absolute;
-  top: 30px;
-  right: 7px;
-  z-index:2;
-  text-align:right;
-}
+    .popwindow {
+      top: 40%;
+      left: 25%;
+      background: #eaeaea;
+      width: 50%;
+      height: 20%;
 
-#capture {
-  font-size: 35px;
-}
+      display: inline-block;
+      position: relative;
+      padding: 1em 2.2em;
+      text-align: center;
+      color: #fff;
+      border-radius: 10px;
+      background-color: #2772DB;
+      overflow: hidden;
+    }
 
-#map {
-  height: 100%;
-  width: 100%;
-  z-index: 1;
-}
+    .popwindow .label {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateY(-50%) translateX(-50%);
+      font-size: 200%;
+    }
 
-#progress {
-  position: fixed;
-  z-index: 3;
-  width: 100%;
-  height: 2px;
-  -webkit-appearance: none;
-  vertical-align: 1em;
-  color:red;
-}
-#progress[value] {color:red} /* IE10 */
-#progress::-webkit-progress-bar-value {background:red}
-#progress::-webkit-progress-value {background:red}
-#progress::-moz-progress-bar {background:red}
+    .popwindow input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
 
+    #original_controll {
+      position: absolute;
+      top: 30px;
+      right: 7px;
+      z-index: 2;
+      text-align: right;
+    }
 
-</style>
+    #capture {
+      font-size: 35px;
+    }
+
+    #map {
+      height: 100%;
+      width: 100%;
+      z-index: 1;
+    }
+
+    #progress {
+      position: fixed;
+      z-index: 3;
+      width: 100%;
+      height: 2px;
+      -webkit-appearance: none;
+      vertical-align: 1em;
+      color: red;
+    }
+
+    #progress[value] {
+      color: red
+    }
+
+    /* IE10 */
+
+    #progress::-webkit-progress-bar-value {
+      background: red
+    }
+
+    #progress::-webkit-progress-value {
+      background: red
+    }
+
+    #progress::-moz-progress-bar {
+      background: red
+    }
+
+    #menuopen {
+      position: fixed;
+      font-size: 11px;
+      cursor: pointer;
+      background: #fff;
+      top: 10px;
+      z-index: 9;
+      left: 115px;
+      padding: 8px;
+    }
+
+    #menuclose {
+      position: absolute;
+      font-size: 10px;
+      right: 10px;
+      cursor: pointer;
+      z-index: 9;
+    }
+
+    #menu {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      width: 30%;
+      height: 100%;
+      background-color: white;
+      overflow: scroll;
+      text-align: left;
+    }
+
+    #list>ul {
+      list-style-type: none;
+      padding-left: 10px;
+    }
+
+    #list>ul>li {
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    #list>ul>li::before {
+      content: "■";
+      color: red;
+      margin-right: 5px;
+    }
+
+    #list>ul>li>span {
+      margin-left: 10px;
+    }
+
+    #list>ul>li.hidden,
+    #list>ul>li.hidden::before {
+      color: #dedede;
+    }
+  </style>
 </head>
+
 <body>
-<progress id="progress" value="0" max="100"></progress>
-<div class="popup"><div class="popwindow">
-<div class="label">Select Gpx Files</div>
-<input type="file" id="files" name="files[]" accept=".gpx" multiple />
-</div></div>
-<div id="original_controll">
-<div id="capture">📷</div>
-<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-text="今まで走った記録を残しました" data-url="https://ctyo.github.io/JourneyMap/" data-hashtags="JourneyMap " data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-</div>
-<div id="map"></div>
+  <progress id="progress" value="0" max="100"></progress>
+  <div class="popup">
+    <div class="popwindow">
+      <div class="label">Select Gpx Files</div>
+      <input type="file" id="files" name="files[]" accept=".gpx" multiple />
+    </div>
+  </div>
+  <div id="original_controll">
+    <div id="capture">📷</div>
+    <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-text="今まで走った記録を残しました" data-url="https://ctyo.github.io/JourneyMap/"
+      data-hashtags="JourneyMap " data-show-count="false">Tweet</a>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <div id="menuopen">ルート一覧</div>
+    <div id="menu">
+      <p id="menuclose">閉じる</p>
+      <div id="list">
+        <ul></ul>
+      </div>
+    </div>
+  </div>
+
+  <div id="map"></div>
 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://maps.google.com/maps/api/js?v=3&key=AIzaSyCtjwW1zjRUzEO6YdwVwNfGRaDC9d8mDFk&sensor=false" type="text/javascript" charset="UTF-8"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.js"></script>
-<script src="./jorneymap.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maps.google.com/maps/api/js?&libraries=geometry&v=3&key=AIzaSyCtjwW1zjRUzEO6YdwVwNfGRaDC9d8mDFk&sensor=false"
+    type="text/javascript" charset="UTF-8"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.js"></script>
+  <script src="./jorneymap.js"></script>
 
 
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  <script>
+    (function (i, s, o, g, r, a, m) {
+    i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+      (i[r].q = i[r].q || []).push(arguments)
+    }, i[r].l = 1 * new Date(); a = s.createElement(o),
+      m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
-  ga('create', 'UA-11027566-8', 'auto');
-  ga('send', 'pageview');
+    ga('create', 'UA-11027566-8', 'auto');
+    ga('send', 'pageview');
 
-</script>
+  </script>
 </body>
-</html>
 
+</html>
