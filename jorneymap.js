@@ -12,10 +12,49 @@
                 { saturation: -60 },
                 { inverse_lightness: false }
             ]
-        }]
+        }],
+        mapTypeControlOptions: {
+            mapTypeIds: [google.maps.MapTypeId.ROADMAP, '白地図'],
+            style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+        }
     };
 
     var map = new google.maps.Map(document.getElementById("map"), opts);
+
+    // GSI Map - Ortho
+    function WhiteMapLyer() {
+
+        WhiteMapLyer.prototype.tileSize = new google.maps.Size(256, 256);
+        WhiteMapLyer.prototype.minZoom = 5;
+        WhiteMapLyer.prototype.maxZoom = 14;
+        WhiteMapLyer.prototype.name = '白地図(国土地理院)';
+        WhiteMapLyer.prototype.alt = '白地図(国土地理院)';
+
+        WhiteMapLyer.prototype.getTile = function (tileXY, zoom, ownerDocument) {
+            var tileImage = ownerDocument.createElement('img');
+            var x = tileXY.x;
+            var y = Math.pow(2, (zoom-1)) - 1 - tileXY.y;
+            var z = zoom + 1;
+
+            var url = 'https://map.c.yimg.jp/b?r=1&x=' + x + '&y=' + y + '&z=' +z;
+            var url = 'https://cyberjapandata.gsi.go.jp/xyz/blank/' + zoom  + '/' + tileXY.x + '/' + tileXY.y + '.png';
+
+
+            tileImage.src = url;
+            tileImage.style.width = this.tileSize.width + 'px';
+            tileImage.style.height = this.tileSize.height + 'px';
+
+            return tileImage;
+        };
+    }
+    var whiteMapLyer = new WhiteMapLyer();
+    map.mapTypes.set('白地図', whiteMapLyer);
+    map.setMapTypeId('白地図');
+
+
+
+
+
     var bounds = new google.maps.LatLngBounds();
     var routes = [];
 
@@ -45,14 +84,14 @@
         var distance = 0;
         var pathList = polyline.getPath().b;
         pathList.forEach(function (path, i) {
-            if (i-1 <= 0) return;
-            distance += google.maps.geometry.spherical.computeDistanceBetween(path, pathList[i-1]);
+            if (i - 1 <= 0) return;
+            distance += google.maps.geometry.spherical.computeDistanceBetween(path, pathList[i - 1]);
         });
 
         routes.push({
             title: xmldoc.querySelector('metadata>name') ? xmldoc.querySelector('metadata>name').textContent : 'new route',
-            distance : distance,
-            polyline : polyline
+            distance: distance,
+            polyline: polyline
         });
     }
 
@@ -76,10 +115,10 @@
             // 縮尺の調整
             map.fitBounds(bounds)
             // 表示リストの描画
-            routes.forEach(function(route) {
+            routes.forEach(function (route) {
                 var list = $('<li>' + route.title + '</li>');
-                list.append('<span>' + Math.floor(route.distance/100) /10 + 'km' + '</span>');
-                list.on('click', function() {
+                list.append('<span>' + Math.floor(route.distance / 100) / 10 + 'km' + '</span>');
+                list.on('click', function () {
                     route.polyline.setVisible(!route.polyline.visible);
                     if (route.polyline.visible) {
                         $(this).removeClass('hidden');
@@ -127,10 +166,10 @@
         readFiles(file_array);
     });
 
-    $('#menuclose').on('click', function() {
+    $('#menuclose').on('click', function () {
         $('#menu').hide();
     });
-    $('#menuopen').on('click', function() {
+    $('#menuopen').on('click', function () {
         $('#menu').show();
     });
 
