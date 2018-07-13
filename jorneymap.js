@@ -27,18 +27,18 @@
         WhiteMapLyer.prototype.tileSize = new google.maps.Size(256, 256);
         WhiteMapLyer.prototype.minZoom = 5;
         WhiteMapLyer.prototype.maxZoom = 14;
-        WhiteMapLyer.prototype.name = '白地図(国土地理院)';
-        WhiteMapLyer.prototype.alt = '白地図(国土地理院)';
+        WhiteMapLyer.prototype.name = '白地図(MIERUNE)';
+        WhiteMapLyer.prototype.alt = '白地図(MIERUNE)';
 
         WhiteMapLyer.prototype.getTile = function (tileXY, zoom, ownerDocument) {
             var tileImage = ownerDocument.createElement('img');
-            var x = tileXY.x;
-            var y = Math.pow(2, (zoom-1)) - 1 - tileXY.y;
-            var z = zoom + 1;
+//            var x = tileXY.x;
+//            var y = Math.pow(2, (zoom-1)) - 1 - tileXY.y;
+//            var z = zoom + 1;
 
-            var url = 'https://map.c.yimg.jp/b?r=1&x=' + x + '&y=' + y + '&z=' +z;
-            var url = 'https://cyberjapandata.gsi.go.jp/xyz/blank/' + zoom  + '/' + tileXY.x + '/' + tileXY.y + '.png';
-
+//            var url = 'https://map.c.yimg.jp/b?r=1&x=' + x + '&y=' + y + '&z=' +z;
+//            var url = 'https://cyberjapandata.gsi.go.jp/xyz/blank/' + zoom  + '/' + tileXY.x + '/' + tileXY.y + '.png';
+            var url = 'https://tile.mierune.co.jp/mierune_mono/' + zoom  + '/' + tileXY.x + '/' + tileXY.y + '.png';
 
             tileImage.src = url;
             tileImage.style.width = this.tileSize.width + 'px';
