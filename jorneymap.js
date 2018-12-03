@@ -82,7 +82,7 @@
         var polyline = new google.maps.Polyline(polylineOpts);
 
         var distance = 0;
-        var pathList = polyline.getPath().b;
+        var pathList = polyline.getPath();
         pathList.forEach(function (path, i) {
             if (i - 1 <= 0) return;
             distance += google.maps.geometry.spherical.computeDistanceBetween(path, pathList[i - 1]);
