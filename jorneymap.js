@@ -147,7 +147,8 @@
 
         var capture = function () {
             html2canvas(document.querySelector("#map"), {
-                useCORS: true
+                useCORS: true,
+                foreignObjectRendering:true
             }).then(function (canvas) {
                 // コントロールを復活
                 map.setOptions({ disableDefaultUI: false });
@@ -158,7 +159,7 @@
                 saveBlob(blob, 'journeymap.png');
             });
         }
-        setTimeout(capture, 50);
+        setTimeout(capture, 500);
     });
 
     // サンプル表示用
