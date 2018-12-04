@@ -41,6 +41,12 @@ body {
   font-size: 200%;
 }
 
+.popwindow .label .sample {
+    color: white;
+    font-size: 70%;
+    text-decoration: underline;
+}
+
 .popwindow input {
   position: absolute;
   top: 0;
