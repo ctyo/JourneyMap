@@ -49,7 +49,7 @@
     }
     var whiteMapLyer = new WhiteMapLyer();
     map.mapTypes.set('白地図', whiteMapLyer);
-    map.setMapTypeId('白地図');
+//    map.setMapTypeId('白地図');
 
 
 
@@ -112,6 +112,11 @@
             }
             reader.readAsText(file);
         } else {
+            removePopup();
+        }
+    }
+
+    function removePopup () {
             // 縮尺の調整
             map.fitBounds(bounds)
             // 表示リストの描画
@@ -132,7 +137,6 @@
             // プログレスバー等の削除
             $('#progress').hide();
             $('.popup').hide();
-        }
     }
 
     // 画像を保存
@@ -155,6 +159,25 @@
             });
         }
         setTimeout(capture, 50);
+    });
+
+    // サンプル表示用
+    $('.popwindow .label .sample').on('click', function (e) {
+        e.preventDefault();
+        [1,2,3,4,5,6,7,8].forEach(function (i) {
+            var filename = './sample/' + i + '.gpx';
+            $.ajax({
+                url : filename,
+                type : 'GET',
+                dataType : 'text', 
+                success : function (data) {
+                    parse_gpx(data);
+                }
+            });
+        });
+        $(document).ajaxStop(function() {
+            removePopup();
+        });
     });
 
     $('#files').on('change', function (e) {
