@@ -1,0 +1,159 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.popup {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  z-index: 100;
+  transition: .2s ease;
+  opacity: 0.8;
+}
+
+.popwindow {
+  top: 40%;
+  left: 25%;
+  background: #eaeaea;
+  width: 50%;
+  height: 20%;
+
+  display: inline-block;
+  position: relative;
+  padding: 1em 2.2em;
+  text-align: center;
+  color: #fff;
+  border-radius: 10px;
+  background-color: #2772DB;
+  overflow: hidden;
+}
+
+.popwindow .label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+  font-size: 200%;
+}
+
+.popwindow input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+#original_controll {
+  position: absolute;
+  top: 30px;
+  right: 7px;
+  z-index: 2;
+  text-align: right;
+}
+
+#capture {
+  font-size: 35px;
+}
+
+#map {
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+}
+
+#progress {
+  position: fixed;
+  z-index: 3;
+  width: 100%;
+  height: 2px;
+  -webkit-appearance: none;
+  vertical-align: 1em;
+  color: red;
+}
+
+#progress[value] {
+  color: red
+}
+
+/* IE10 */
+
+#progress::-webkit-progress-bar-value {
+  background: red
+}
+
+#progress::-webkit-progress-value {
+  background: red
+}
+
+#progress::-moz-progress-bar {
+  background: red
+}
+
+#menuopen {
+  position: fixed;
+  font-size: 11px;
+  cursor: pointer;
+  background: #fff;
+  top: 10px;
+  z-index: 9;
+  left: 160px;
+  padding: 8px;
+}
+
+#menuclose {
+  position: absolute;
+  font-size: 10px;
+  right: 10px;
+  cursor: pointer;
+  z-index: 9;
+}
+
+#menu {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  width: 30%;
+  height: 100%;
+  background-color: white;
+  overflow: scroll;
+  text-align: left;
+}
+
+#list>ul {
+  list-style-type: none;
+  padding-left: 10px;
+}
+
+#list>ul>li {
+  font-size: 13px;
+  cursor: pointer;
+}
+
+#list>ul>li::before {
+  content: "■";
+  color: red;
+  margin-right: 5px;
+}
+
+#list>ul>li>span {
+  margin-left: 10px;
+}
+
+#list>ul>li.hidden,
+#list>ul>li.hidden::before {
+  color: #dedede;
+}
+
+.gmnoprint {
+  width: 140px !important;
+}
