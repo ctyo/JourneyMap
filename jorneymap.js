@@ -18,6 +18,7 @@
             style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
         }
     };
+    var totaldistance = 0;
 
     var map = new google.maps.Map(document.getElementById("map"), opts);
 
@@ -88,8 +89,19 @@
             distance += google.maps.geometry.spherical.computeDistanceBetween(path, pathList.getAt(i - 1));
         });
 
+
+        var title = 'new route';
+        if (xmldoc.querySelector('metadata>name')) {
+            title = xmldoc.querySelector('metadata>name').textContent;
+        } else if (xmldoc.querySelector('name')) {
+            title = xmldoc.querySelector('name').textContent;
+        }
+
+        totaldistance += distance;
+        $('#distance').text((Math.floor(totaldistance / 100) / 10).toLocaleString());
+
         routes.push({
-            title: xmldoc.querySelector('metadata>name') ? xmldoc.querySelector('metadata>name').textContent : 'new route',
+            title: title,
             distance: distance,
             polyline: polyline
         });
@@ -127,6 +139,7 @@
                 route.polyline.setVisible(!route.polyline.visible);
                 if (route.polyline.visible) {
                     $(this).removeClass('hidden');
+
                 } else {
                     $(this).addClass('hidden');
                 }
@@ -189,6 +202,8 @@
     $('#menuopen').on('click', function () {
         $('#menu').show();
     });
+
+    $('.distance').click(function () { this.style.display = 'none'; });
 
     // Base64データをBlobデータに変換
     function Base64toBlob(base64) {
