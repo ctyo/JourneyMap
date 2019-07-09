@@ -18,6 +18,7 @@
             style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
         }
     };
+    var totaldistance = 0;
 
     var map = new google.maps.Map(document.getElementById("map"), opts);
 
@@ -32,13 +33,13 @@
 
         WhiteMapLyer.prototype.getTile = function (tileXY, zoom, ownerDocument) {
             var tileImage = ownerDocument.createElement('img');
-//            var x = tileXY.x;
-//            var y = Math.pow(2, (zoom-1)) - 1 - tileXY.y;
-//            var z = zoom + 1;
+            //            var x = tileXY.x;
+            //            var y = Math.pow(2, (zoom-1)) - 1 - tileXY.y;
+            //            var z = zoom + 1;
 
-//            var url = 'https://map.c.yimg.jp/b?r=1&x=' + x + '&y=' + y + '&z=' +z;
-//            var url = 'https://cyberjapandata.gsi.go.jp/xyz/blank/' + zoom  + '/' + tileXY.x + '/' + tileXY.y + '.png';
-            var url = 'https://tile.mierune.co.jp/mierune_mono/' + zoom  + '/' + tileXY.x + '/' + tileXY.y + '.png';
+            //            var url = 'https://map.c.yimg.jp/b?r=1&x=' + x + '&y=' + y + '&z=' +z;
+            //            var url = 'https://cyberjapandata.gsi.go.jp/xyz/blank/' + zoom  + '/' + tileXY.x + '/' + tileXY.y + '.png';
+            var url = 'https://tile.mierune.co.jp/mierune_mono/' + zoom + '/' + tileXY.x + '/' + tileXY.y + '.png';
 
             tileImage.src = url;
             tileImage.style.width = this.tileSize.width + 'px';
@@ -49,7 +50,7 @@
     }
     var whiteMapLyer = new WhiteMapLyer();
     map.mapTypes.set('白地図', whiteMapLyer);
-//    map.setMapTypeId('白地図');
+    //    map.setMapTypeId('白地図');
 
 
 
@@ -85,11 +86,22 @@
         var pathList = polyline.getPath();
         pathList.forEach(function (path, i) {
             if (i - 1 <= 0) return;
-            distance += google.maps.geometry.spherical.computeDistanceBetween(path, pathList.getAt(i-1));
+            distance += google.maps.geometry.spherical.computeDistanceBetween(path, pathList.getAt(i - 1));
         });
 
+
+        var title = 'new route';
+        if (xmldoc.querySelector('metadata>name')) {
+            title = xmldoc.querySelector('metadata>name').textContent;
+        } else if (xmldoc.querySelector('name')) {
+            title = xmldoc.querySelector('name').textContent;
+        }
+
+        totaldistance += distance;
+        $('#distance').text((Math.floor(totaldistance / 100) / 10).toLocaleString());
+
         routes.push({
-            title: xmldoc.querySelector('metadata>name') ? xmldoc.querySelector('metadata>name').textContent : 'new route',
+            title: title,
             distance: distance,
             polyline: polyline
         });
@@ -116,27 +128,28 @@
         }
     }
 
-    function removePopup () {
-            // 縮尺の調整
-            map.fitBounds(bounds)
-            // 表示リストの描画
-            routes.forEach(function (route) {
-                var list = $('<li>' + route.title + '</li>');
-                list.append('<span>' + Math.floor(route.distance / 100) / 10 + 'km' + '</span>');
-                list.on('click', function () {
-                    route.polyline.setVisible(!route.polyline.visible);
-                    if (route.polyline.visible) {
-                        $(this).removeClass('hidden');
-                    } else {
-                        $(this).addClass('hidden');
-                    }
-                });
-                $('#list>ul').append(list);
-            });
+    function removePopup() {
+        // 縮尺の調整
+        map.fitBounds(bounds)
+        // 表示リストの描画
+        routes.forEach(function (route) {
+            var list = $('<li>' + route.title + '</li>');
+            list.append('<span>' + Math.floor(route.distance / 100) / 10 + 'km' + '</span>');
+            list.on('click', function () {
+                route.polyline.setVisible(!route.polyline.visible);
+                if (route.polyline.visible) {
+                    $(this).removeClass('hidden');
 
-            // プログレスバー等の削除
-            $('#progress').hide();
-            $('.popup').hide();
+                } else {
+                    $(this).addClass('hidden');
+                }
+            });
+            $('#list>ul').append(list);
+        });
+
+        // プログレスバー等の削除
+        $('#progress').hide();
+        $('.popup').hide();
     }
 
     // 画像を保存
@@ -145,38 +158,31 @@
         map.setOptions({ disableDefaultUI: true });
         $('#original_controll').hide();
 
-        var capture = function () {
-            html2canvas(document.querySelector("#map"), {
-                useCORS: true,
-                foreignObjectRendering:true
-            }).then(function (canvas) {
-                // コントロールを復活
+        setTimeout(function () {
+            $(window).on('click.captureclose', function () {
                 map.setOptions({ disableDefaultUI: false });
                 $('#original_controll').show();
-
-                var base64 = canvas.toDataURL('image/png');
-                var blob = Base64toBlob(base64);
-                saveBlob(blob, 'journeymap.png');
+                $(window).off('click.captureclose');
             });
-        }
-        setTimeout(capture, 500);
+        }, 1000);
+
     });
 
     // サンプル表示用
     $('.popwindow .label .sample').on('click', function (e) {
         e.preventDefault();
-        [1,2,3,4,5,6,7,8].forEach(function (i) {
+        [1, 2, 3, 4, 5, 6, 7, 8].forEach(function (i) {
             var filename = './sample/' + i + '.gpx';
             $.ajax({
-                url : filename,
-                type : 'GET',
-                dataType : 'text', 
-                success : function (data) {
+                url: filename,
+                type: 'GET',
+                dataType: 'text',
+                success: function (data) {
                     parse_gpx(data);
                 }
             });
         });
-        $(document).ajaxStop(function() {
+        $(document).ajaxStop(function () {
             removePopup();
         });
     });
@@ -196,6 +202,8 @@
     $('#menuopen').on('click', function () {
         $('#menu').show();
     });
+
+    $('.distance').click(function () { this.style.display = 'none'; });
 
     // Base64データをBlobデータに変換
     function Base64toBlob(base64) {

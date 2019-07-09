@@ -163,3 +163,31 @@ body {
 .gmnoprint {
   width: 140px !important;
 }
+
+.logotext {
+  position: absolute;
+  bottom: 13px;
+  right: 0;
+  z-index: 2;
+  background: #ffffff7d;
+  color: #545454;
+  font-weight: bold;
+}
+.logotext > p {
+  margin: 2px;
+  font-size: 13px;
+}
+.gm-bundled-control-on-bottom {
+  bottom : 220px !important;
+}
+
+.distance {
+    position: absolute;
+    bottom: 20px;
+    right: 0;
+    z-index: 2;
+    color: white;
+    font-size: 20px;
+    text-shadow: 1px 1px black;
+    font-weight: bold;
+}
